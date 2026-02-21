@@ -1,6 +1,6 @@
-import ApiError from './app-error';
+import AppError from './app-error';
 
-class NotFoundError extends ApiError {
+class NotFoundError extends AppError {
   constructor(message: string) {
     super(message, 404);
   }

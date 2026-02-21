@@ -1,6 +1,6 @@
-import ApiError from './app-error';
+import AppError from './app-error';
 
-class ConflictError extends ApiError {
+class ConflictError extends AppError {
   constructor(message: string) {
     super(message, 409);
   }

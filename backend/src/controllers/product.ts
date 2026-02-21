@@ -36,11 +36,11 @@ export const createNewProduct = async (
 
     res
       .status(201)
-      .send({ message: "Товар успешно добавлен", product: newProduct });
+      .json(newProduct);
   } catch (err) {
     // 409
     if (err instanceof Error && err.message.includes("E11000")) {
-      return next(new ConflictError(err.message));
+      return next(new ConflictError('Товар с таким заголовком уже существует'));
     }
     return next(err);
   }

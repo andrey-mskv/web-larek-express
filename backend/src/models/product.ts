@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 interface IImage {
-  _id: mongoose.Types.ObjectId;
   fileName: string;
   originalName: string;
 }
@@ -56,6 +55,9 @@ const productSchema = new mongoose.Schema<IProduct>({
       message: "Цена не может быть отрицательной",
     },
   },
+},
+{
+  versionKey: false,
 });
 
 const Product = mongoose.model<IProduct>("product", productSchema);

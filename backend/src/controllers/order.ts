@@ -25,24 +25,35 @@ export const createOrder = async (
     // Фильтруем товары по ID
     const itemsId = items.map((id) => new mongoose.Types.ObjectId(id));
     const products = await Product.find({ _id: { $in: itemsId } });
+    const existingIds = new Set(
+      products.map((product) => product._id.toString()),
+    );
+
+    console.log("Найдены товары:", existingIds);
 
     // Проверяем, что все товары существуют
-    if (products.length !== items.length) {
-      throw new BadRequestError("Некоторые товары не найдены");
+    const notFoundIds = items.filter((id) => !existingIds.has(id));
+
+    if (notFoundIds.length > 0) {
+      // Здесь у тебя есть конкретный список несуществующих id
+      throw new BadRequestError(`Товары не найдены: ${notFoundIds.join(", ")}`);
     }
 
     // Проверяем, что все товары в продаже
-    const notForSale = products.find((p) => p.price === null);
-    if (notForSale) {
-      throw new BadRequestError("В заказе есть товары не в продаже");
+    const notForSaleIds = products
+      .filter((p) => p.price === null || p.price === undefined)
+      .map((p) => p._id.toString());
+
+    if (notForSaleIds.length > 0) {
+      throw new BadRequestError(
+        `Товар с id ${notForSaleIds.join(", ")} не продается`,
+      );
     }
 
     // Проверяем, что сумма заказа не превышает общую стоимость товаров
     const sum = products.reduce((acc, p) => acc + Number(p.price), 0);
     if (sum !== total) {
-      throw new BadRequestError(
-        "Сумма заказа не соответствует общей стоимости товаров",
-      );
+      throw new BadRequestError("Неверная сумма заказа");
     }
 
     // Генерация уникального ID

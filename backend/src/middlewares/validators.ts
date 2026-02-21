@@ -3,15 +3,6 @@ import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import BadRequestError from "../errors/bad-request-error";
 
-interface Order {
-  payment: string; // card || online
-  email: string;
-  phone: string;
-  address: string;
-  total: number;
-  items: string[];
-}
-
 // Схема валидации для создания заказа
 export const orderValidation = celebrate({
   [Segments.BODY]: Joi.object({
@@ -45,18 +36,30 @@ export const validateObjId = (
   return next();
 };
 
-// Валидация обновления товара
-export const validateProductUpdateBody = celebrate({
+const imageSchema = Joi.object({
+  fileName: Joi.string().required(),
+  originalName: Joi.string().required(),
+});
+
+const productSchema = {
+  title: Joi.string().min(2).max(30),
+  image: imageSchema,
+  category: Joi.string(),
+  description: Joi.string().allow("").max(500),
+  price: Joi.number().integer().min(0).allow(null),
+};
+
+// Валидация для создания товара
+export const validateProductBody = celebrate({
   [Segments.BODY]: Joi.object({
-    title: Joi.string().min(2).max(30),
-    image: Joi.object({
-      fileName: Joi.string().required(),
-      originalName: Joi.string().required(),
-    }),
-    category: Joi.string(),
-    description: Joi.string().allow("").max(500),
-    price: Joi.number().integer().min(0).allow(null),
-  })
-    .min(1)
-    .unknown(false),
+    ...productSchema,
+    title: productSchema.title.required(),
+    image: productSchema.image.required(),
+    category: productSchema.category.required(),
+  }).unknown(false),
+});
+
+// Валидация для обновления товара (все поля необязательные, но должны быть валидными)
+export const validateProductUpdateBody = celebrate({
+  [Segments.BODY]: Joi.object(productSchema).min(1).unknown(false),
 });

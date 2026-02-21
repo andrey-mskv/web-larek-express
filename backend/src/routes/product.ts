@@ -7,13 +7,14 @@ import {
 } from "../controllers/product";
 import {
   validateObjId,
+  validateProductBody,
   validateProductUpdateBody,
 } from "../middlewares/validators";
 
 const router = express.Router();
 
 router.get("/", getProducts);
-router.post("/", createNewProduct);
+router.post("/", validateProductBody,createNewProduct);
 router.patch(
   "/:productId",
   validateObjId,

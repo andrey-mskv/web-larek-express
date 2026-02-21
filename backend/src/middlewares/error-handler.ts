@@ -1,16 +1,15 @@
-import ApiError from "../errors/app-error";
-import {  Request, Response } from "express";
+import AppError from "../errors/app-error";
+import { Request, Response, NextFunction } from "express";
 
 export default function errorHandler(
   err: unknown,
-  req: Request,
+  _req: Request,
   res: Response,
+  _next: NextFunction,
 ) {
-  if (err instanceof ApiError) {
+  if (err instanceof AppError) {
     return res.status(err.statusCode).send({ message: err.message });
   }
 
-  return res
-    .status(500)
-    .send({ message: "Ошибка 500: Внутренняя ошибка сервера" });
+  return res.status(500).send({ message: "Внутренняя ошибка сервера" });
 }
