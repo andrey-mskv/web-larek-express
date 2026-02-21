@@ -1,12 +1,12 @@
-import { celebrate, Joi, Segments } from "celebrate";
-import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
-import BadRequestError from "../errors/bad-request-error";
+import { celebrate, Joi, Segments } from 'celebrate';
+import { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
+import BadRequestError from '../errors/bad-request-error';
 
 // Схема валидации для создания заказа
 export const orderValidation = celebrate({
   [Segments.BODY]: Joi.object({
-    payment: Joi.string().valid("card", "online").required(),
+    payment: Joi.string().valid('card', 'online').required(),
     email: Joi.string().email().required(),
     phone: Joi.string()
       .pattern(/^\+?[\d\s()-]{10,20}$/)
@@ -30,7 +30,7 @@ export const validateObjId = (
   const { productId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(productId as string)) {
-    return next(new BadRequestError("Некорректный формат id"));
+    return next(new BadRequestError('Некорректный формат id'));
   }
 
   return next();
@@ -45,7 +45,7 @@ const productSchema = {
   title: Joi.string().min(2).max(30),
   image: imageSchema,
   category: Joi.string(),
-  description: Joi.string().allow("").max(500),
+  description: Joi.string().allow('').max(500),
   price: Joi.number().integer().min(0).allow(null),
 };
 

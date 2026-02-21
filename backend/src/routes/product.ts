@@ -1,26 +1,26 @@
-import express from "express";
+import express from 'express';
 import {
   getProducts,
   createNewProduct,
   updateProduct,
   deleteProduct,
-} from "../controllers/product";
+} from '../controllers/product';
 import {
   validateObjId,
   validateProductBody,
   validateProductUpdateBody,
-} from "../middlewares/validators";
+} from '../middlewares/validators';
 
 const router = express.Router();
 
-router.get("/", getProducts);
-router.post("/", validateProductBody,createNewProduct);
+router.get('/', getProducts);
+router.post('/', validateProductBody, createNewProduct);
 router.patch(
-  "/:productId",
+  '/:productId',
   validateObjId,
   validateProductUpdateBody,
   updateProduct,
 );
-router.delete("/:productId", validateObjId, deleteProduct);
+router.delete('/:productId', validateObjId, deleteProduct);
 
 export default router;

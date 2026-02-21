@@ -1,4 +1,4 @@
-import dontenv from "dotenv";
+import dontenv from 'dotenv';
 
 dontenv.config();
 

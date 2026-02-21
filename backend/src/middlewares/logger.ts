@@ -8,20 +8,18 @@ interface LogMeta {
   req?: { method?: string; originalUrl?: string };
 }
 
-
 const devFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.printf((info: winston.Logform.TransformableInfo & { meta?: LogMeta }) => {
-    const status =
-      info.meta?.error?.statusCode ||
-      info.meta?.res?.statusCode ||
-      500;
+    const status = info.meta?.error?.statusCode
+      || info.meta?.res?.statusCode
+      || 500;
 
     const method = info.meta?.req?.method;
     const url = info.meta?.req?.originalUrl;
 
     return `${info.timestamp} ${info.level} ${status} ${method} ${url} → ${info.message}`;
-  })
+  }),
 );
 
 export const requestLogger = expressWinston.logger({

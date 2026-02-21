@@ -1,5 +1,5 @@
-import AppError from "../errors/app-error";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
+import AppError from '../errors/app-error';
 
 export default function errorHandler(
   err: unknown,
@@ -11,5 +11,5 @@ export default function errorHandler(
     return res.status(err.statusCode).send({ message: err.message });
   }
 
-  return res.status(500).send({ message: "Внутренняя ошибка сервера" });
+  return res.status(500).send({ message: 'Внутренняя ошибка сервера' });
 }

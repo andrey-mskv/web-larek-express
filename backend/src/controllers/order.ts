@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import Product from "../models/product";
-import { faker } from "@faker-js/faker";
-import mongoose from "mongoose";
-import BadRequestError from "../errors/bad-request-error";
+import { Request, Response } from 'express';
+import { faker } from '@faker-js/faker';
+import mongoose from 'mongoose';
+import Product from '../models/product';
+import BadRequestError from '../errors/bad-request-error';
 
 interface IOrder {
   _id: mongoose.Types.ObjectId;
@@ -14,7 +14,7 @@ interface IOrder {
   items: string[];
 }
 
-export const createOrder = async (
+const createOrder = async (
   req: Request<unknown, unknown, IOrder>,
   res: Response,
   next: any,
@@ -29,14 +29,12 @@ export const createOrder = async (
       products.map((product) => product._id.toString()),
     );
 
-    console.log("Найдены товары:", existingIds);
-
     // Проверяем, что все товары существуют
     const notFoundIds = items.filter((id) => !existingIds.has(id));
 
     if (notFoundIds.length > 0) {
       // Здесь у тебя есть конкретный список несуществующих id
-      throw new BadRequestError(`Товары не найдены: ${notFoundIds.join(", ")}`);
+      throw new BadRequestError(`Товары не найдены: ${notFoundIds.join(', ')}`);
     }
 
     // Проверяем, что все товары в продаже
@@ -46,14 +44,14 @@ export const createOrder = async (
 
     if (notForSaleIds.length > 0) {
       throw new BadRequestError(
-        `Товар с id ${notForSaleIds.join(", ")} не продается`,
+        `Товар с id ${notForSaleIds.join(', ')} не продается`,
       );
     }
 
     // Проверяем, что сумма заказа не превышает общую стоимость товаров
     const sum = products.reduce((acc, p) => acc + Number(p.price), 0);
     if (sum !== total) {
-      throw new BadRequestError("Неверная сумма заказа");
+      throw new BadRequestError('Неверная сумма заказа');
     }
 
     // Генерация уникального ID
@@ -64,3 +62,5 @@ export const createOrder = async (
     next(err);
   }
 };
+
+export default createOrder;
